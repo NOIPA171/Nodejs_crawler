@@ -1,0 +1,32 @@
+{
+  "name": "nodejs_crawler",
+  "version": "1.0.0",
+  "description": "crawler for Node js (Telunyang after class)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/NOIPA171/Nodejs_crawler.git"
+  },
+  "keywords": [
+    "web",
+    "crawler",
+    "nodejs",
+    "nightmare",
+    "mysql",
+    "javascript"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/NOIPA171/Nodejs_crawler/issues"
+  },
+  "homepage": "https://github.com/NOIPA171/Nodejs_crawler#readme",
+  "dependencies": {
+    "jquery": "^3.4.1",
+    "jsdom": "^16.2.0",
+    "nightmare": "^3.0.2"
+  }
+}
