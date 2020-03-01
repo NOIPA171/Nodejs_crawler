@@ -71,9 +71,9 @@ async function step3(){
         await nightmare.scrollTo(offset, 0).wait(500);
 
         //滾動一段高度後，強制跳出迴圈 => 視情況使用
-        if(offset > 2000){
+        /*if(offset > 2000){
             break;
-        }
+        }*/
     }
 }
 
