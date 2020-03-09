@@ -71,9 +71,9 @@ async function step3(){
         await nightmare.scrollTo(offset, 0).wait(500);
 
         //滾動一段高度後，強制跳出迴圈 => 視情況使用
-        /*if(offset > 2000){
+        if(offset > 1500){
             break;
-        }*/
+        }
     }
 }
 
@@ -122,8 +122,59 @@ async function step4(){
     })
 }
 
-//關閉 nightmare
+//接續先前整理的陣列，再繼續往下取得更多資訊
 async function step5(){
+    for(let i = 0 ; i < arrLink.length ; i++){
+        console.log("前往影片頁面取得資料...")
+
+        //前往影片播放的頁面，並取得頁面 html 字串
+        let html = await nightmare
+        .goto(arrLink[i].link)
+        .wait('yt-view-count-renderer.style-scope.ytd-video-primary-info-renderer span.view-count.style-scope.yt-view-count-renderer')
+        .evaluate(()=>{
+            return document.documentElement.innerHTML
+        });
+
+        //取得觀看次數的字串（未整理
+        let pageView = $(html).find('yt-view-count-renderer.style-scope.ytd-video-primary-info-renderer span.view-count.style-scope.yt-view-count-renderer').text();
+
+        let pattern = /[\d,]+/g;
+        let match = null;
+        match = pattern.exec(pageView); //只會抓一組 full match
+        pageView = match[0]
+        pageView = pageView.replace(/,/g, ""); //剩下純數字字串
+
+        //取得按讚次數
+        let likeCount = $(html).find('ytd-toggle-button-renderer.force-icon-button a.ytd-toggle-button-renderer:eq(0) yt-formatted-string').attr('aria-label');
+        match = null;
+        pattern = /[\d,]+/g;
+        match = pattern.exec(likeCount);
+        likeCount = match[0]
+        likeCount = likeCount.replace(/,/g, "");
+
+        //取得討厭次數
+        let dislikeCount = $(html).find('ytd-toggle-button-renderer.force-icon-button a.ytd-toggle-button-renderer:eq(1) yt-formatted-string').attr('aria-label');
+        match = null;
+        pattern = /[\d,]+/g;
+        match = pattern.exec(dislikeCount);
+        
+        if(match === null){
+            dislikeCount = 0
+        }else{
+            dislikeCount = match[0];
+            dislikeCount = dislikeCount.replace(/,/g, "");
+        }
+
+        //建立新屬性
+        arrLink[i].pageView = +pageView; //轉成數字
+        arrLink[i].likeCount = +likeCount;
+        arrLink[i].dislikeCount = +dislikeCount;
+
+    }
+}
+
+//關閉 nightmare
+async function close(){
     await nightmare.end(err=>{
         if(err) throw err;
         console.log("Nightmare is closed.");
@@ -140,14 +191,14 @@ async function asyncArray(functionList){
 
 //執行
 try{
-    asyncArray([step1, step2, step3, step4, step5]).then(async ()=>{
+    asyncArray([step1, step2, step3, step4, step5, close]).then(async ()=>{
         //因為下面有 await，所以.then要加入async
         console.dir(arrLink, {depth: null});
 
         //若是檔案不存在，則新增檔案，並同時寫入內容
-        if(!fs.existsSync("downloads/youtube.json")){
+        //if(!fs.existsSync("downloads/youtube.json")){
             await writeFile("downloads/youtube.json", JSON.stringify(arrLink, null, 4)) //取代 null, 縮排4格
-        }
+        //}
         console.log("Done");
     })
 }catch(err){

@@ -74,6 +74,10 @@ async function scroll(){
         
         //console.log(`currentHeight = ${currentHeight}, offset = ${offset}`);
 
+        if(offset > 1000){
+            break;
+        }
+
         //接近底部時，按下一頁
         //在自動產生內容前，先按按鈕
         if( (currentHeight - offset) < 2000 && await nightmare.exists('button.js-more-page')){
@@ -130,6 +134,24 @@ async function parseHtml(){
     })
 }
 
+//前往頁面取得詳細資料
+async function getInfo(){
+    for(let i = 0 ; i < arrLink.length ; i++){
+        let html = await nightmare
+        .goto(arrLink[i].link)
+        .wait('.job-description-table.row')
+        .evaluate(()=>{
+            return document.documentElement.innerHTML
+        })
+        let positionPlace = $(html).find('.job-description-table.row .row.mb-2:eq(3) p.t3.mb-0').text();
+        let positionCategory = $(html).find('.job-description-table.row .row.mb-2:eq(0) .job-description-table__data').text().trim();
+
+        //新增屬性
+        arrLink[i].positionPlace = positionPlace;
+        arrLink[i].positionCategory = positionCategory;
+    }
+}
+
 
 //關閉程式
 async function close(){
@@ -148,7 +170,7 @@ async function asyncArray(functionList){
 
 //執行
 try{
-    asyncArray([search, setJobType, scroll, parseHtml, close]).then(async ()=>{
+    asyncArray([search, setJobType, scroll, parseHtml, getInfo, close]).then(async ()=>{
         //因為下面有 await，所以.then要加入async
         console.dir(arrLink, {depth: null});
 
