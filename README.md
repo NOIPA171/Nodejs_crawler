@@ -10,7 +10,7 @@ crawl youtube info
 先抓列表，再到個別頁面取得詳細資訊
 
 # youtube_downloader.js
-取得youtube影片資訊
+取得youtube影片資訊 \n
 資料結構：
 ```
 [
