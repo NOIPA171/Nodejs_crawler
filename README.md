@@ -10,7 +10,22 @@ crawl youtube info
 先抓列表，再到個別頁面取得詳細資訊
 
 # youtube_downloader.js
-download cralwed videos' video
+取得youtube影片資訊
+資料結構：
+```
+[
+    {
+        "img": "https://url-to-img.jpg",
+        "id": "imgId",
+        "title": "title for video",
+        "link": "https://www.youtube.com/watch?v=imgId",
+        "singer": "singer",
+        "pageView": 00000,
+        "likeCount": 00000,
+        "dislikeCount": 0000
+    }....
+]
+```
 
 # wine-searcher.js
 curl
